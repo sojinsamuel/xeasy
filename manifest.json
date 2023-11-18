@@ -24,6 +24,7 @@
     "webNavigation",
     "notifications",
     "scripting",
-    "storage"
+    "storage",
+    "tabs"
   ]
 }

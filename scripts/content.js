@@ -1,13 +1,21 @@
-// Function to create buttons and append them to the DOM
+let firstLoad = true;
+
+function wait(mls = 200) {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve(`Waited for ${mls} mls`);
+    }, mls);
+  });
+}
+
 function createButtons() {
   const el2 = document.querySelector('[data-testid="UserName"]');
 
   if (el2) {
-    // Your button creation code here...
     var buttonContainer = document.createElement("div");
     buttonContainer.style.display = "flex";
     buttonContainer.style.marginBottom = "10px";
-    buttonContainer.id = "xeasy"; // Add the id "xeasy" to the buttonContainer
+    buttonContainer.id = "xeasy";
 
     var buttonElement1 = document.createElement("button");
     buttonElement1.textContent = "Analytics";
@@ -87,12 +95,24 @@ if (
   location.href.endsWith("RiseWithSobin")
 )
   observer.observe(targetNode, config);
-console.log("====================================");
-console.log(observer);
-console.log("====================================");
+// console.log("====================================");
+// console.log(location.href);
+// console.log("====================================");
+
+window.addEventListener("load", async (event) => {
+  if (
+    location.href.endsWith("RiseWithSobin") &&
+    document.querySelectorAll("#xeasy").length === 0
+  ) {
+    firstLoad = false;
+    await wait();
+    createButtons();
+  }
+  console.log("page is fully loaded");
+});
 
 let lastUrl = location.href;
-new MutationObserver(() => {
+new MutationObserver(async () => {
   const url = location.href;
   if (url !== lastUrl) {
     lastUrl = url;
@@ -101,16 +121,15 @@ new MutationObserver(() => {
       location.href.endsWith("RiseWithSobin") &&
       document.querySelectorAll("#xeasy").length === 0
     ) {
+      if (firstLoad) {
+        firstLoad = false;
+        await wait();
+      }
       createButtons();
     }
   }
 }).observe(document, { subtree: true, childList: true });
 
 function onUrlChange() {
-  console.log("URL changed!", location.href);
+  console.log("URL changed!!", location.href);
 }
-
-// const value = (document.querySelector("div").innerText = "Hello World");
-// console.log("====================================");
-// console.log(value);
-// console.log("====================================");
