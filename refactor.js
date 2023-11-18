@@ -1,21 +1,10 @@
-let firstLoad = true;
-
-function wait(mls = 200) {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      resolve(`Waited for ${mls} mls`);
-    }, mls);
-  });
-}
-
 function createButtons() {
-  const el2 = document.querySelector('[data-testid="UserName"]');
+  const element = document.querySelector('[data-testid="UserName"]');
 
   if (
-    el2 &&
-    document.querySelectorAll("#xeasy").length === 0 &&
+    element &&
     location.href.endsWith("RiseWithSobin") &&
-    el2.textContent.split("@")[1] === "RiseWithSobin"
+    document.querySelectorAll("#xeasy").length === 0
   ) {
     var buttonContainer = document.createElement("div");
     buttonContainer.style.display = "flex";
@@ -61,35 +50,21 @@ function createButtons() {
       window.open("https://twitter.com/compose/tweet/unsent/scheduled");
     });
 
-    if (
-      document.querySelectorAll("#xeasy").length === 0 &&
-      location.href.endsWith("RiseWithSobin") &&
-      el2.textContent.split("@")[1] === "RiseWithSobin"
-    ) {
-      // Append buttons to the container
-      buttonContainer.appendChild(buttonElement1);
-      buttonContainer.appendChild(buttonElement2);
-      el2.parentNode.insertBefore(buttonContainer, el2.nextSibling);
-    }
+    // Append buttons to the container
+    buttonContainer.appendChild(buttonElement1);
+    buttonContainer.appendChild(buttonElement2);
+
+    element.parentNode.insertBefore(buttonContainer, element.nextSibling);
   } else {
     console.log("Target element not found");
   }
 }
-// console.log(
-//   document.querySelectorAll("#xeasy").length === 0 &&
-//     location.href.endsWith("RiseWithSobin") &&
-//     el2.textContent.split("@")[1] === "RiseWithSobin"
-// );
-// Callback function to be executed when the target element appears
+
 function handleMutation(mutationsList, observer) {
   for (const mutation of mutationsList) {
     if (mutation.type === "childList" && mutation.addedNodes.length > 0) {
       // Target element or its child has been added, call the function
-      if (
-        document.querySelectorAll("#xeasy").length === 0 &&
-        location.href.endsWith("RiseWithSobin")
-      )
-        createButtons();
+      createButtons();
 
       // Disconnect the observer since we've done our job
       observer.disconnect();
@@ -97,60 +72,31 @@ function handleMutation(mutationsList, observer) {
   }
 }
 
-// Select the target node
-const targetNode = document.body;
+function onUrlChange() {
+  console.log("URL changed!", location.href);
+}
 
-// Options for the observer (we want to observe changes in the child nodes)
-const config = { childList: true };
+function checkAndCreateButtons() {
+  const buttonsCreated = localStorage.getItem("buttonsCreated");
 
-// Create an observer instance linked to the callback function
-const observer = new MutationObserver(handleMutation);
-
-// Start observing the target node for configured mutations
-if (
-  document.querySelectorAll("#xeasy").length === 0 &&
-  location.href.endsWith("RiseWithSobin")
-)
-  observer.observe(targetNode, config);
-// console.log("====================================");
-// console.log(location.href);
-// console.log("====================================");
-
-window.addEventListener("load", async (event) => {
-  if (
-    location.href.endsWith("RiseWithSobin") &&
-    document.querySelectorAll("#xeasy").length === 0
-  ) {
-    firstLoad = false;
-    await wait();
+  if (!buttonsCreated) {
     createButtons();
+    localStorage.setItem("buttonsCreated", "true");
   }
-  console.log("page is fully loaded");
+}
+
+// Check and create buttons on initial page load
+document.addEventListener("DOMContentLoaded", function () {
+  checkAndCreateButtons();
 });
 
+// Check and create buttons when the URL changes
 let lastUrl = location.href;
-new MutationObserver(async () => {
+new MutationObserver(() => {
   const url = location.href;
   if (url !== lastUrl) {
     lastUrl = url;
     onUrlChange();
-    if (
-      location.href.endsWith("RiseWithSobin") &&
-      document.querySelectorAll("#xeasy").length === 0
-    ) {
-      if (firstLoad) {
-        firstLoad = false;
-        await wait();
-      }
-      if (!firstLoad) createButtons();
-    }
+    checkAndCreateButtons();
   }
 }).observe(document, { subtree: true, childList: true });
-
-function onUrlChange() {
-  console.log("URL changed!!", location.href);
-  let isExist = !!location.href.endsWith("RiseWithSobin");
-  if (!isExist) {
-    document.querySelectorAll("#xeasy").forEach((el) => el.remove());
-  }
-}
