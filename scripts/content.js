@@ -1,6 +1,6 @@
 let firstLoad = true;
 
-function wait(mls = 200) {
+function wait(mls = 400) {
   return new Promise((resolve) => {
     setTimeout(() => {
       resolve(`Waited for ${mls} mls`);
@@ -81,7 +81,7 @@ function createButtons() {
 //     el2.textContent.split("@")[1] === "RiseWithSobin"
 // );
 // Callback function to be executed when the target element appears
-function handleMutation(mutationsList, observer) {
+async function handleMutation(mutationsList, observer) {
   for (const mutation of mutationsList) {
     if (mutation.type === "childList" && mutation.addedNodes.length > 0) {
       // Target element or its child has been added, call the function
@@ -89,7 +89,11 @@ function handleMutation(mutationsList, observer) {
         document.querySelectorAll("#xeasy").length === 0 &&
         location.href.endsWith("RiseWithSobin")
       )
-        createButtons();
+        if (firstLoad) {
+          firstLoad = false;
+          await wait();
+        }
+      createButtons();
 
       // Disconnect the observer since we've done our job
       observer.disconnect();
@@ -122,7 +126,7 @@ window.addEventListener("load", async (event) => {
     document.querySelectorAll("#xeasy").length === 0
   ) {
     firstLoad = false;
-    await wait();
+    await wait(1000);
     createButtons();
   }
   console.log("page is fully loaded");
@@ -151,6 +155,6 @@ function onUrlChange() {
   console.log("URL changed!!", location.href);
   let isExist = !!location.href.endsWith("RiseWithSobin");
   if (!isExist) {
-    document.querySelectorAll("#xeasy").forEach((el) => el.remove());
+    document.querySelectorAll("#xeasy")?.forEach((el) => el.remove());
   }
 }
