@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Twitter Username Extractor</title>
+    <link rel="stylesheet" href="popup.css" />
+  </head>
+
+  <body>
+    <form id="twitterForm">
+      <label for="twitterUrl">Add profile URL or username</label>
+      <input
+        type="text"
+        id="twitterUrl"
+        placeholder="e.g., add profile url or username"
+        required
+      />
+      <button type="button" id="addButton">Add</button>
+    </form>
+    <div id="confirmationMessage"></div>
+    <button type="button" id="deleteButton">Delete</button>
+    <script src="popup.js"></script>
+  </body>
+</html>

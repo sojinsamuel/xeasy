@@ -12,19 +12,13 @@
   "content_scripts": [
     {
       "js": ["scripts/content.js"],
-      "matches": ["*://twitter.com/*"]
+      "matches": ["*://twitter.com/*"],
+      "css": ["scripts/content.css"]
     }
   ],
-  "content_security_policy": {
-    "extension_pages": "script-src 'self'; object-src 'self';",
-    "sandbox": "sandbox allow-scripts allow-forms allow-popups allow-modals; script-src 'self' 'unsafe-inline' 'unsafe-eval'; child-src 'self';"
-  },
-  "permissions": [
-    "webRequest",
-    "webNavigation",
-    "notifications",
-    "scripting",
-    "storage",
-    "tabs"
-  ]
+  "permissions": ["storage", "scripting", "activeTab"],
+  "action": {
+    "default_title": "Xeasy",
+    "default_popup": "popups/popup.html"
+  }
 }
